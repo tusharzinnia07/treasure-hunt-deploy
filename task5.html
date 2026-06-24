@@ -18,14 +18,14 @@
 <body>
     <div class="container">
         <div class="task-header">
-            <h1><span class="pride-flag" aria-hidden="true"></span> FINAL CHALLENGE - WINNER!</h1>
+            <h1><span class="rainbow-icon" aria-hidden="true"></span> Task 5 - Fifth Challenge</h1>
             <div class="progress-bar">
-                <div class="progress" style="width: 100%;"></div>
+                <div class="progress" style="width: 83%;"></div>
             </div>
         </div>
         
         <div class="verification-section">
-            <h2>🔐 Final Verification</h2>
+            <h2>🔐 Verification Required</h2>
             <div class="form-group">
                 <label for="teamId5">Team ID:</label>
                 <input type="text" id="teamId5" style="text-transform: uppercase;">
@@ -34,44 +34,26 @@
                 <label for="previousCode5">Previous Task Code:</label>
                 <input type="text" id="previousCode5" maxlength="5">
             </div>
-            <button onclick="verifyTask5()" id="verifyBtn5">Verify & Win!</button>
+            <button onclick="verifyTask5()" id="verifyBtn5">Verify & Continue</button>
         </div>
         
         <div class="clue-section" id="clueSection5" style="display: none;">
             <h2>🎉 Welcome Team <span id="teamDisplayName">TEAM</span>!</h2>
-            
-            <div class="winner-section">
-                <h1 class="pride-text" style="font-size: 3rem; margin-bottom: 1rem;">
-                    🎊 CONGRATULATIONS! 🎊
-                </h1>
-
-                <h2 class="pride-text" style="font-size: 2rem; margin-bottom: 1rem;">
-                    <span class="pride-flag pride-flag-sm" aria-hidden="true"></span> YOU WON! <span class="pride-flag pride-flag-sm" aria-hidden="true"></span>
-                </h2>
-
-                <div class="winner-banner">
-                    <h3>🌟 PRIDE TREASURE HUNT CHAMPION! 🌟</h3>
-                </div>
-
-                <p class="winner-subtext">
-                    🎯 You have successfully completed all challenges!<br>
-                    🚀 Amazing teamwork and problem-solving skills!<br>
-                    🎖️ You are officially declared as the WINNER!
-                </p>
-
-                <div class="winner-celebration">
-                    <h4>🎊 Celebration Time! 🎊</h4>
-                    <p>
-                        🏅 Claim your prize and celebrate Pride!<br>
-                        📸 Don't forget to take a winning team photo!<br>
-                        <span class="rainbow-icon" aria-hidden="true"></span> Share your success with everyone!
-                    </p>
-                </div>
+            <h2>🧩 Your Fifth Clue:</h2>
+            <div class="clue-box">
+                <p>"Inclusion grows when we show up for one another. <br>
+                    Your next color is 💙 BLUE — representing harmony. <br>
+                    The best ideas don't always come from desks and meeting rooms.
+                    Find the spot designed for comfort, creativity, and just being yourself."</p>
             </div>
             
-            <button onclick="completeTask5()" id="completeBtn5" class="btn-success" style="font-size: 1.2rem; padding: 15px 30px;">
-                <span class="pride-flag pride-flag-sm" aria-hidden="true"></span> CLAIM VICTORY! <span class="pride-flag pride-flag-sm" aria-hidden="true"></span>
-            </button>
+            <div class="task-code-section">
+                <h3>📝 Task Code to Remember:</h3>
+                <div class="task-code">TC505</div>
+                <p class="task-note">Remember this code! You'll need it for the final task.</p>
+            </div>
+            
+            <button onclick="completeTask5()" id="completeBtn5" class="btn-success">✅ Mark Task 5 Complete</button>
         </div>
         
         <div class="navigation">
@@ -80,6 +62,7 @@
         </div>
     </div>
     
+    <!-- Firebase Scripts -->
     <script src="firebase-script.js"></script>
     <script>
         function getURLParameter(name) {
@@ -88,10 +71,6 @@
         }
         
         window.onload = function() {
-            if (!blockDirectAccess(5)) {
-                return;
-            }
-            
             const urlTeamId = getURLParameter('team');
             if (urlTeamId) {
                 document.getElementById('teamId5').value = urlTeamId.toUpperCase();
@@ -108,15 +87,16 @@
                 if (progress && progress.completedTasks >= 5) {
                     document.getElementById('clueSection5').style.display = 'block';
                     document.getElementById('teamDisplayName').textContent = teamId;
-                    document.getElementById('completeBtn5').textContent = '🎉 VICTORY CLAIMED!';
+                    document.getElementById('completeBtn5').textContent = '✅ Task 5 Completed!';
                     document.getElementById('completeBtn5').disabled = true;
                     document.getElementById('completeBtn5').style.opacity = '0.7';
-                    document.body.classList.add('celebration-bg');
                 }
             });
         }
         
-        function displayTeamInfo() {}
+        function displayTeamInfo() {
+            // Compatibility function
+        }
     </script>
 </body>
 </html>

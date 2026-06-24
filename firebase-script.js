@@ -23,15 +23,17 @@ class FirebaseTreasureHunt {
             2: "TC242", 
             3: "TC803",
             4: "TC200",
-            5: "WINNER"
+            5: "TC505",
+            6: "WINNER"
         };
         
         this.clues = {
-            1: "गिनती में जो दिखे नहीं, पर उसके बिना कुछ भी चले नहीं। सोचो उस खोज के जनक को, और पहुँचो उसके नाम वाले ठिकाने को।",
-            2: "ना कोई ऑफिस बिना इसके चलता है, और ना ही आगंतुक बिना यहाँ रुके निकलता है। वह जगह जहाँ मुस्कान से स्वागत होता है, वहीं अगला इशारा चुपचाप बैठा होता है।",
-            3: "जहाँ दीवारें सुनती हैं पर बोलती नहीं, और कुर्सियाँ अक्सर भरी होती हैं। वहाँ फैसले लिखे जाते हैं खामोशी से, सुराग छुपा है उसी जगह की गोपनीयता में।",
-            4: "शब्दों की दुनिया से अब बाहर आओ, अब थोड़ा आराम भी तो मनाओ। जहाँ पेट भरता है और मन मुस्काता है, वहीं मेहनत का असली फल तुम्हारा इंतज़ार करता है.",
-            5: "🎊 CONGRATULATIONS! YOU WON! 🎊"
+            1: "Pride is built on the joy of coming together. 🌈 Your first color is ❤️ RED — representing life. Where in our office do people gather not just to eat, but to laugh, recharge, and truly connect?",
+            2: "Every movement begins with people talking to each other. Your next color is 🧡 ORANGE — representing healing. Ideas flow here, but somewhere nearby they take a permanent form. Find the place where words leave the screen and enter the world.",
+            3: "Being seen is everything. Your next color is 💛 YELLOW — representing sunlight. The first impression of Zinnia lives here — where every guest is greeted with a smile. Go where every journey inside the office begins.",
+            4: "Pride is about creating spaces where everyone feels welcome, just as they are. Your next color is 💚 GREEN — representing nature and growth. Find the people whose job it is to make sure everyone at Zinnia truly belongs.",
+            5: "Inclusion grows when we show up for one another. Your next color is 💙 BLUE — representing harmony. The best ideas don't always come from desks and meeting rooms. Find the spot designed for comfort, creativity, and just being yourself.",
+            6: "Almost there! 💜 Pride is about standing tall, rooted in who you are, and blooming without apology. Find the tallest living thing in the office — the one that's been quietly growing, just like the movement itself."
         };
         
         this.currentTeamId = null;
@@ -140,7 +142,7 @@ class FirebaseTreasureHunt {
             };
             
             // If this is the final task, mark as completed
-            if (taskNumber === 5) {
+            if (taskNumber === 6) {
                 updates.completionTime = now;
                 updates.status = 'completed';
                 updates.currentTask = 'completed';
@@ -168,8 +170,8 @@ class FirebaseTreasureHunt {
 
             console.log(`🔥 Task ${taskNumber} completed for team ${teamId}`);
             
-            if (taskNumber === 5) {
-                alert('🏆 Congratulations! You have completed the treasure hunt!');
+            if (taskNumber === 6) {
+                alert('You found the final color! 💜 VIOLET — representing spirit. 🏆 Congratulations, Treasure Hunter! You did it! 🎊🌈');
             } else {
                 alert(`✅ Task ${taskNumber} completed! Move to the next location.`);
             }
@@ -337,14 +339,14 @@ function updateLeaderboard(teams) {
     let html = '';
     teams.forEach((team, index) => {
         const rank = index + 1;
-        const progress = `${team.completedTasks}/5`;
+        const progress = `${team.completedTasks}/6`;
         
         let currentTask, status;
-        if (team.completedTasks === 5) {
+        if (team.completedTasks === 6) {
             currentTask = '🏆 WINNER!';
             status = '🏆 CHAMPION!';
-        } else if (team.status === 'completed' && team.completedTasks === 4) {
-            currentTask = 'Task 5 - Final Challenge';
+        } else if (team.status === 'completed' && team.completedTasks === 5) {
+            currentTask = 'Task 6 - Final Challenge';
             status = '🎯 At Final Task';
         } else if (team.currentTask === 'completed') {
             currentTask = 'COMPLETED!';
@@ -357,8 +359,8 @@ function updateLeaderboard(teams) {
         const completionTime = team.completionTime ? 
             new Date(team.completionTime.toDate()).toLocaleTimeString() : '-';
         
-        // Highlight winners (Task 5 completed)
-        const rowClass = team.completedTasks === 5 ? 'winner-team' : 
+        // Highlight winners (Task 6 completed)
+        const rowClass = team.completedTasks === 6 ? 'winner-team' : 
                         (team.status === 'completed' ? 'completed-team' : '');
         
         html += `
@@ -378,7 +380,7 @@ function updateLeaderboard(teams) {
 
 function updateStatistics(teams) {
     const totalTeams = teams.length;
-    const completedTeams = teams.filter(team => team.completedTasks === 5).length;
+    const completedTeams = teams.filter(team => team.completedTasks === 6).length;
     const inProgressTeams = totalTeams - completedTeams;
     
     if (document.getElementById('totalTeams')) {
@@ -547,7 +549,7 @@ async function completeTask4() {
         document.getElementById('completeBtn4').textContent = '✅ Task 4 Completed!';
         document.getElementById('completeBtn4').disabled = true;
         document.getElementById('completeBtn4').style.opacity = '0.7';
-        alert('🎉 Amazing! Task 4 completed. Find the final QR code for the WINNER challenge!');
+        alert('🎉 Amazing! Task 4 completed. Find the QR code for Task 5!');
     }
 }
 
@@ -560,13 +562,11 @@ async function verifyTask5() {
         return;
     }
     
-    // 🔒 SEQUENCE LOCK: Check if team can access Task 5
     if (!(await canAccessTask(teamId, 5))) {
         showSequenceError(5);
         return;
     }
     
-    // Simple code check
     if (code !== 'TC200') {
         alert('❌ Incorrect code! You need the code from Task 4.');
         return;
@@ -576,8 +576,6 @@ async function verifyTask5() {
         document.getElementById('clueSection5').style.display = 'block';
         document.getElementById('teamDisplayName').textContent = teamId;
         document.querySelector('.verification-section').style.display = 'none';
-        // Final winner task - start celebration!
-        celebrateWinner();
     }
 }
 
@@ -590,21 +588,60 @@ async function completeTask5() {
     
     const success = await firebaseGame.completeTask(5, teamId);
     if (success) {
-        document.getElementById('completeBtn5').textContent = '🎉 VICTORY CLAIMED!';
+        document.getElementById('completeBtn5').textContent = '✅ Task 5 Completed!';
         document.getElementById('completeBtn5').disabled = true;
         document.getElementById('completeBtn5').style.opacity = '0.7';
+        alert('🎉 Great work! Task 5 completed. Find the QR code for Task 6!');
+    }
+}
+
+async function verifyTask6() {
+    const teamId = document.getElementById('teamId6').value.trim().toUpperCase();
+    const code = document.getElementById('previousCode6').value.trim().toUpperCase();
+    
+    if (!teamId || !code) {
+        alert('Please fill in all fields');
+        return;
+    }
+    
+    if (!(await canAccessTask(teamId, 6))) {
+        showSequenceError(6);
+        return;
+    }
+    
+    if (code !== 'TC505') {
+        alert('❌ Incorrect code! You need the code from Task 5.');
+        return;
+    }
+    
+    if (await firebaseGame.setTeamId(teamId)) {
+        document.getElementById('clueSection6').style.display = 'block';
+        document.getElementById('teamDisplayName').textContent = teamId;
+        document.querySelector('.verification-section').style.display = 'none';
+    }
+}
+
+async function completeTask6() {
+    const teamId = firebaseGame.getCurrentTeamId();
+    if (!teamId) {
+        alert('Please verify your team ID first');
+        return;
+    }
+    
+    const success = await firebaseGame.completeTask(6, teamId);
+    if (success) {
+        document.getElementById('completeBtn6').textContent = '🎉 VICTORY CLAIMED!';
+        document.getElementById('completeBtn6').disabled = true;
+        document.getElementById('completeBtn6').style.opacity = '0.7';
         
-        // 🏆 WINNER CELEBRATION!
-        alert('🏆 CONGRATULATIONS! You are the OFFICIAL WINNER of the treasure hunt!');
+        alert('🏆 CONGRATULATIONS! Treasure Hunter! You did it! 🎊🌈');
         
-        // 🎊 Show celebration
         setTimeout(() => {
             if (confirm('🎉 Would you like to see the final results and leaderboard?')) {
                 goToAdmin();
             }
         }, 2000);
         
-        // 🎯 Final celebration effects
         celebrateWinner();
     }
 }
