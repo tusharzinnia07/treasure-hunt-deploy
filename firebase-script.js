@@ -19,11 +19,11 @@ const db = firebase.firestore();
 class FirebaseTreasureHunt {
     constructor() {
         this.taskCodes = {
-            1: "TC441",
-            2: "TC242", 
-            3: "TC803",
-            4: "TC200",
-            5: "TC505",
+            1: "THWC1",
+            2: "THPA2", 
+            3: "THRC3",
+            4: "THHR4",
+            5: "THBB5",
             6: "WINNER"
         };
         
@@ -170,9 +170,7 @@ class FirebaseTreasureHunt {
 
             console.log(`🔥 Task ${taskNumber} completed for team ${teamId}`);
             
-            if (taskNumber === 6) {
-                alert('You found the final color! 💜 VIOLET — representing spirit. 🏆 Congratulations, Treasure Hunter! You did it! 🎊🌈');
-            } else {
+            if (taskNumber !== 6) {
                 alert(`✅ Task ${taskNumber} completed! Move to the next location.`);
             }
             
@@ -421,7 +419,7 @@ async function verifyTask2() {
     }
     
     // Simple code check
-    if (code !== 'TC441') {
+    if (code !== 'THWC1') {
         alert('❌ Incorrect code! You need the code from Task 1.');
         return;
     }
@@ -449,7 +447,7 @@ async function verifyTask3() {
     }
     
     // Simple code check
-    if (code !== 'TC242') {
+    if (code !== 'THPA2') {
         alert('❌ Incorrect code! You need the code from Task 2.');
         return;
     }
@@ -477,7 +475,7 @@ async function verifyTask4() {
     }
     
     // Simple code check
-    if (code !== 'TC803') {
+    if (code !== 'THRC3') {
         alert('❌ Incorrect code! You need the code from Task 3.');
         return;
     }
@@ -567,7 +565,7 @@ async function verifyTask5() {
         return;
     }
     
-    if (code !== 'TC200') {
+    if (code !== 'THHR4') {
         alert('❌ Incorrect code! You need the code from Task 4.');
         return;
     }
@@ -609,7 +607,7 @@ async function verifyTask6() {
         return;
     }
     
-    if (code !== 'TC505') {
+    if (code !== 'THBB5') {
         alert('❌ Incorrect code! You need the code from Task 5.');
         return;
     }
@@ -634,32 +632,190 @@ async function completeTask6() {
         document.getElementById('completeBtn6').disabled = true;
         document.getElementById('completeBtn6').style.opacity = '0.7';
         
-        alert('🏆 CONGRATULATIONS! Treasure Hunter! You did it! 🎊🌈');
-        
+        celebrateWinner(teamId);
+
         setTimeout(() => {
-            if (confirm('🎉 Would you like to see the final results and leaderboard?')) {
+            if (confirm('Would you like to see the final results and leaderboard?')) {
                 goToAdmin();
             }
-        }, 2000);
-        
-        celebrateWinner();
+        }, 3500);
     }
 }
 
-// 🎊 Winner celebration function
-function celebrateWinner() {
-    // Add confetti effect to body
-    document.body.style.background = 'linear-gradient(45deg, #FFD700, #FFA500, #FF6B6B, #4ECDC4)';
-    document.body.style.backgroundSize = '400% 400%';
-    document.body.style.animation = 'gradient 3s ease infinite';
-    
-    // Add winner sound effect (optional)
-    try {
-        // You can add sound here if needed
-        console.log('🎉 WINNER CELEBRATION!');
-    } catch (e) {
-        // Silent fail for sound
+const PRIDE_CONFETTI_COLORS = [
+    '#E40303', '#FF8C00', '#FFED00', '#00811F',
+    '#24408E', '#732982', '#F6A9B6', '#FFD700', '#FF5E7A'
+];
+const PARTY_EMOJIS = ['🎉', '🎊', '🥳', '✨', '🌈', '🏆', '💜', '🎈'];
+
+let confettiParticles = [];
+let confettiAnimationId = null;
+let confettiEndTime = 0;
+
+function getCelebrationCanvas() {
+    let canvas = document.getElementById('celebration-canvas');
+    if (!canvas) {
+        canvas = document.createElement('canvas');
+        canvas.id = 'celebration-canvas';
+        canvas.className = 'celebration-canvas';
+        document.body.appendChild(canvas);
     }
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    return canvas;
+}
+
+function createConfettiParticle(originX, originY, angleMin, angleMax, speedMin, speedMax) {
+    const angle = angleMin + Math.random() * (angleMax - angleMin);
+    const speed = speedMin + Math.random() * (speedMax - speedMin);
+    return {
+        x: originX,
+        y: originY,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed - (2 + Math.random() * 4),
+        w: 6 + Math.random() * 8,
+        h: 4 + Math.random() * 6,
+        color: PRIDE_CONFETTI_COLORS[Math.floor(Math.random() * PRIDE_CONFETTI_COLORS.length)],
+        rotation: Math.random() * 360,
+        spin: (Math.random() - 0.5) * 12,
+        gravity: 0.12 + Math.random() * 0.08,
+        opacity: 1,
+        shape: Math.random() > 0.5 ? 'rect' : 'circle'
+    };
+}
+
+function launchPartyPoppers() {
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    const origins = [
+        { x: 0, y: h * 0.88, aMin: -Math.PI * 0.48, aMax: -Math.PI * 0.05 },
+        { x: w, y: h * 0.88, aMin: -Math.PI * 0.95, aMax: -Math.PI * 0.52 },
+        { x: w * 0.5, y: h, aMin: -Math.PI * 0.88, aMax: -Math.PI * 0.12 }
+    ];
+
+    origins.forEach(origin => {
+        for (let i = 0; i < 55; i++) {
+            confettiParticles.push(
+                createConfettiParticle(origin.x, origin.y, origin.aMin, origin.aMax, 8, 22)
+            );
+        }
+    });
+
+    for (let i = 0; i < 40; i++) {
+        confettiParticles.push(
+            createConfettiParticle(
+                w * 0.5,
+                h * 0.3,
+                -Math.PI,
+                0,
+                4,
+                14
+            )
+        );
+    }
+}
+
+function spawnFloatingEmojis() {
+    for (let i = 0; i < 14; i++) {
+        setTimeout(() => {
+            const el = document.createElement('div');
+            el.className = 'floating-emoji';
+            el.textContent = PARTY_EMOJIS[Math.floor(Math.random() * PARTY_EMOJIS.length)];
+            el.style.left = `${5 + Math.random() * 90}vw`;
+            el.style.top = `${40 + Math.random() * 40}vh`;
+            el.style.animationDuration = `${2 + Math.random() * 1.5}s`;
+            document.body.appendChild(el);
+            setTimeout(() => el.remove(), 3500);
+        }, i * 120);
+    }
+}
+
+function showWinnerOverlay(teamName) {
+    const existing = document.getElementById('winner-overlay');
+    if (existing) existing.remove();
+
+    const overlay = document.createElement('div');
+    overlay.id = 'winner-overlay';
+    overlay.className = 'winner-overlay';
+    overlay.innerHTML = `
+        <div class="winner-popup">
+            <div class="winner-popup-icon">🎊</div>
+            <h2>You Won!</h2>
+            <p>${teamName ? `Team <strong>${teamName}</strong> conquered the Pride Treasure Hunt!` : 'You conquered the Pride Treasure Hunt!'}</p>
+        </div>
+    `;
+    document.body.appendChild(overlay);
+}
+
+function animateConfetti() {
+    const canvas = getCelebrationCanvas();
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    confettiParticles = confettiParticles.filter(p => {
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vy += p.gravity;
+        p.vx *= 0.99;
+        p.rotation += p.spin;
+
+        if (Date.now() > confettiEndTime - 2000) {
+            p.opacity -= 0.015;
+        }
+
+        if (p.opacity <= 0 || p.y > canvas.height + 20) return false;
+
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, p.opacity);
+        ctx.translate(p.x, p.y);
+        ctx.rotate((p.rotation * Math.PI) / 180);
+        ctx.fillStyle = p.color;
+
+        if (p.shape === 'circle') {
+            ctx.beginPath();
+            ctx.arc(0, 0, p.w / 2, 0, Math.PI * 2);
+            ctx.fill();
+        } else {
+            ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+        }
+        ctx.restore();
+        return true;
+    });
+
+    if (confettiParticles.length > 0 && Date.now() < confettiEndTime + 500) {
+        confettiAnimationId = requestAnimationFrame(animateConfetti);
+    } else {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        confettiParticles = [];
+        confettiAnimationId = null;
+    }
+}
+
+function startConfettiBurst() {
+    if (confettiAnimationId) cancelAnimationFrame(confettiAnimationId);
+    confettiParticles = [];
+    confettiEndTime = Date.now() + 5000;
+    launchPartyPoppers();
+    animateConfetti();
+
+    setTimeout(launchPartyPoppers, 600);
+    setTimeout(launchPartyPoppers, 1400);
+}
+
+function celebrateWinner(teamName) {
+    document.body.classList.add('celebration-bg');
+    showWinnerOverlay(teamName || firebaseGame.getCurrentTeamId());
+    startConfettiBurst();
+    spawnFloatingEmojis();
+
+    const resizeHandler = () => {
+        const canvas = document.getElementById('celebration-canvas');
+        if (canvas) {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+    };
+    window.addEventListener('resize', resizeHandler, { once: true });
 }
 
 // Navigation functions

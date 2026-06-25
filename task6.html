@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Task 6 - Pride Treasure Hunt</title>
-    <link rel="stylesheet" href="style.css?v=4">
+    <link rel="stylesheet" href="style.css?v=9">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     
     <!-- 🔥 Firebase SDK -->
@@ -89,6 +89,8 @@
                     document.getElementById('completeBtn6').textContent = '✅ Task 6 Completed!';
                     document.getElementById('completeBtn6').disabled = true;
                     document.getElementById('completeBtn6').style.opacity = '0.7';
+                    document.querySelector('.verification-section').style.display = 'none';
+                    celebrateWinner(teamId);
                 }
             });
         }
