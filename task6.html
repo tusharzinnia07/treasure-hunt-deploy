@@ -3,29 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Task 6 - Pride Treasure Hunt</title>
+    <title>Task 6 - You Won! - Pride Treasure Hunt</title>
     <link rel="stylesheet" href="style.css?v=9">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     
-    <!-- 🔥 Firebase SDK -->
+    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
     
-    <!-- Firebase Configuration -->
     <script src="firebase-config.js"></script>
 </head>
 <body>
     <div class="container">
         <div class="task-header">
-            <h1><span class="rainbow-icon" aria-hidden="true"></span> Task 6 - Sixth Challenge</h1>
+            <h1><span class="pride-flag" aria-hidden="true"></span> FINAL STOP — YOU WON!</h1>
             <div class="progress-bar">
                 <div class="progress" style="width: 100%;"></div>
             </div>
         </div>
         
-        <div class="verification-section">
-            <h2>🔐 Verification Required</h2>
+        <div class="verification-section" id="verificationSection">
+            <h2>🔐 Final Verification</h2>
             <div class="form-group">
                 <label for="teamId6">Team ID:</label>
                 <input type="text" id="teamId6" style="text-transform: uppercase;">
@@ -34,70 +33,76 @@
                 <label for="previousCode6">Previous Task Code:</label>
                 <input type="text" id="previousCode6" maxlength="6">
             </div>
-            <button onclick="verifyTask6()" id="verifyBtn6">Verify & Continue</button>
+            <button onclick="verifyTask6()" id="verifyBtn6">Verify &amp; Claim Victory!</button>
         </div>
         
-        <div class="clue-section" id="clueSection6" style="display: none;">
+        <div class="winner-section" id="winnerSection" style="display: none;">
             <h2>🎉 Welcome Team <span id="teamDisplayName">TEAM</span>!</h2>
-            <h2>🧩 Your Sixth Clue:</h2>
-            <div class="clue-box">
-                <p>"Almost there! 💜 <br>
-                    Pride is about standing tall, rooted in who you are, and blooming without apology. <br>
-                    Find the tallest living thing in the office — the one that's been quietly growing, just like the movement itself."</p>
+
+            <h1 class="pride-text" style="font-size: 3rem; margin-bottom: 1rem;">
+                🎊 CONGRATULATIONS! 🎊
+            </h1>
+
+            <h2 class="pride-text" style="font-size: 2rem; margin-bottom: 1rem;">
+                <span class="pride-flag pride-flag-sm" aria-hidden="true"></span> YOU WON! <span class="pride-flag pride-flag-sm" aria-hidden="true"></span>
+            </h2>
+
+            <div class="winner-banner">
+                <h3>🌟 PRIDE TREASURE HUNT CHAMPION! 🌟</h3>
             </div>
-            
-            <div class="task-code-section">
-                <h3>📝 Task Code to Remember:</h3>
-                <div class="task-code">WINNER</div>
-                <p class="task-note">This is the final challenge — mark complete to claim victory!</p>
+
+            <p class="winner-subtext">
+                🎯 You have successfully completed all 6 challenges!<br>
+                🚀 Amazing teamwork and problem-solving skills!<br>
+                🎖️ You are officially declared the WINNER!
+            </p>
+
+            <div class="winner-celebration">
+                <h4>🎊 Celebration Time! 🎊</h4>
+                <p>
+                    🏅 Claim your prize and celebrate Pride!<br>
+                    📸 Don't forget to take a winning team photo!<br>
+                    <span class="rainbow-icon" aria-hidden="true"></span> Share your success with everyone!
+                </p>
             </div>
-            
-            <button onclick="completeTask6()" id="completeBtn6" class="btn-success">✅ Mark Task 6 Complete</button>
         </div>
         
         <div class="navigation">
             <button onclick="goHome()" class="btn-secondary">🏠 Home</button>
-            <button onclick="goToAdmin()" class="btn-admin">📊 View Results</button>
+            <button onclick="goToAdmin()" class="btn-admin" id="viewResultsBtn" style="display: none;">📊 View Results</button>
         </div>
     </div>
     
-    <!-- Firebase Scripts -->
     <script src="firebase-script.js"></script>
     <script>
         function getURLParameter(name) {
             const urlParams = new URLSearchParams(window.location.search);
             return urlParams.get(name);
         }
-        
-        window.onload = function() {
+
+        function showWinnerPage(teamId) {
+            document.getElementById('verificationSection').style.display = 'none';
+            document.getElementById('winnerSection').style.display = 'block';
+            document.getElementById('teamDisplayName').textContent = teamId;
+            document.getElementById('viewResultsBtn').style.display = 'inline-block';
+            document.body.classList.add('celebration-bg');
+        }
+
+        window.onload = async function() {
             const urlTeamId = getURLParameter('team');
             if (urlTeamId) {
                 document.getElementById('teamId6').value = urlTeamId.toUpperCase();
             }
-            displayTeamInfo();
-            loadTaskStatus();
-        };
-        
-        function loadTaskStatus() {
+
             const teamId = document.getElementById('teamId6').value || firebaseGame.getCurrentTeamId();
             if (!teamId) return;
-            
-            firebaseGame.getTeamProgress(teamId).then(progress => {
-                if (progress && progress.completedTasks >= 6) {
-                    document.getElementById('clueSection6').style.display = 'block';
-                    document.getElementById('teamDisplayName').textContent = teamId;
-                    document.getElementById('completeBtn6').textContent = '✅ Task 6 Completed!';
-                    document.getElementById('completeBtn6').disabled = true;
-                    document.getElementById('completeBtn6').style.opacity = '0.7';
-                    document.querySelector('.verification-section').style.display = 'none';
-                    celebrateWinner(teamId);
-                }
-            });
-        }
-        
-        function displayTeamInfo() {
-            // Compatibility function
-        }
+
+            const progress = await firebaseGame.getTeamProgress(teamId);
+            if (progress && progress.completedTasks >= 6) {
+                showWinnerPage(teamId);
+                celebrateWinner(teamId);
+            }
+        };
     </script>
 </body>
 </html>

@@ -613,27 +613,36 @@ async function verifyTask6() {
     }
     
     if (await firebaseGame.setTeamId(teamId)) {
-        document.getElementById('clueSection6').style.display = 'block';
-        document.getElementById('teamDisplayName').textContent = teamId;
-        document.querySelector('.verification-section').style.display = 'none';
+        await handleTask6Victory(teamId, true);
     }
 }
 
-async function completeTask6() {
-    const teamId = firebaseGame.getCurrentTeamId();
-    if (!teamId) {
-        alert('Please verify your team ID first');
-        return;
-    }
-    
-    const success = await firebaseGame.completeTask(6, teamId);
-    if (success) {
-        document.getElementById('completeBtn6').textContent = '🎉 VICTORY CLAIMED!';
-        document.getElementById('completeBtn6').disabled = true;
-        document.getElementById('completeBtn6').style.opacity = '0.7';
-        
-        celebrateWinner(teamId);
+async function handleTask6Victory(teamId, isFirstWin) {
+    const progress = await firebaseGame.getTeamProgress(teamId);
+    const alreadyWon = progress && progress.completedTasks >= 6;
 
+    if (!alreadyWon) {
+        const success = await firebaseGame.completeTask(6, teamId);
+        if (!success) return;
+    }
+
+    if (typeof showWinnerPage === 'function') {
+        showWinnerPage(teamId);
+    } else {
+        const verificationSection = document.getElementById('verificationSection');
+        const winnerSection = document.getElementById('winnerSection');
+        if (verificationSection) verificationSection.style.display = 'none';
+        if (winnerSection) winnerSection.style.display = 'block';
+        const teamDisplay = document.getElementById('teamDisplayName');
+        if (teamDisplay) teamDisplay.textContent = teamId;
+        const viewResultsBtn = document.getElementById('viewResultsBtn');
+        if (viewResultsBtn) viewResultsBtn.style.display = 'inline-block';
+        document.body.classList.add('celebration-bg');
+    }
+
+    celebrateWinner(teamId);
+
+    if (isFirstWin && !alreadyWon) {
         setTimeout(() => {
             if (confirm('Would you like to see the final results and leaderboard?')) {
                 goToAdmin();
