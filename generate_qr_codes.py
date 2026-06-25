@@ -52,12 +52,10 @@ def create_qr_code_with_label(url, label, filename, pride_color):
 
     try:
         title_font = ImageFont.truetype("arial.ttf", 28)
-        url_font = ImageFont.truetype("arial.ttf", 14)
         instruction_font = ImageFont.truetype("arial.ttf", 12)
         badge_font = ImageFont.truetype("arial.ttf", 11)
     except OSError:
         title_font = ImageFont.load_default()
-        url_font = ImageFont.load_default()
         instruction_font = ImageFont.load_default()
         badge_font = ImageFont.load_default()
 
@@ -73,24 +71,18 @@ def create_qr_code_with_label(url, label, filename, pride_color):
     badge_x = (img_width - badge_width) // 2
     draw.text((badge_x, 368), badge_text, fill=pride_color["hex"], font=badge_font)
 
-    url_text = url
-    url_bbox = draw.textbbox((0, 0), url_text, font=url_font)
-    url_width = url_bbox[2] - url_bbox[0]
-    url_x = (img_width - url_width) // 2
-    draw.text((url_x, 388), url_text, fill="#666666", font=url_font)
-
     instruction_text = "Enter your Team ID when prompted"
     instruction_bbox = draw.textbbox((0, 0), instruction_text, font=instruction_font)
     instruction_width = instruction_bbox[2] - instruction_bbox[0]
     instruction_x = (img_width - instruction_width) // 2
-    draw.text((instruction_x, 418), instruction_text, fill="#444444", font=instruction_font)
+    draw.text((instruction_x, 398), instruction_text, fill="#444444", font=instruction_font)
 
     step_label = label.split(" - ")[1] if " - " in label else label
     step_text = f"Scan this QR code to access {step_label}"
     step_bbox = draw.textbbox((0, 0), step_text, font=instruction_font)
     step_width = step_bbox[2] - step_bbox[0]
     step_x = (img_width - step_width) // 2
-    draw.text((step_x, 438), step_text, fill="#444444", font=instruction_font)
+    draw.text((step_x, 418), step_text, fill="#444444", font=instruction_font)
 
     draw.rectangle(
         [0, 0, img_width - 1, img_height - 1],

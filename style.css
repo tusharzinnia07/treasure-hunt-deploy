@@ -750,6 +750,16 @@ table tr:hover, .leaderboard-table tr:hover {
     overflow: hidden;
 }
 
+.team-setup-section h2 {
+    color: var(--text-primary);
+    margin-bottom: 20px;
+}
+
+.setup-box p {
+    color: var(--text-primary);
+    line-height: 1.6;
+}
+
 .team-setup-section::before {
     content: '';
     position: absolute;
@@ -774,6 +784,8 @@ table tr:hover, .leaderboard-table tr:hover {
     font-size: 16px;
     text-align: center;
     text-transform: uppercase;
+    color: var(--text-primary);
+    background: #fff;
 }
 
 .team-input-group input:focus {
@@ -782,7 +794,7 @@ table tr:hover, .leaderboard-table tr:hover {
     box-shadow: 0 0 0 3px rgba(201, 58, 168, 0.18);
 }
 
-.help-text { color: var(--text-muted); font-size: 14px; margin-top: 10px; }
+.help-text { color: var(--text-secondary); font-size: 14px; margin-top: 10px; }
 
 .team-welcome {
     background: var(--surface-tint);
